@@ -24,7 +24,6 @@ class DesktopApp:
             self.root, tearoff=0, bg="#444444", fg="white", activebackground="#666666"
         )
         self.context_menu.add_command(label="关闭程序", command=self.safe_exit)
-        self.context_menu.add_command(label="开发者：杨鲲")
 
         # 绑定拖动事件
         self._drag_start_x = 0
