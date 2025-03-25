@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import threading
 import time
 from utils.time_utils import is_workday, get_off_time
+import sys
 
 
 class DesktopApp:
@@ -12,6 +13,9 @@ class DesktopApp:
         self.root.attributes("-topmost", True)  # 置顶显示
         self.root.attributes("-alpha", 0.9)  # 设置透明度
         self.root.overrideredirect(True)  # 隐藏窗口边框
+        if sys.platform == 'win32':
+            self.root.iconbitmap('icon.ico')
+        self.root.iconbitmap("icon.ico")  # 图标
 
         # 时间显示
         self.time_label = tk.Label(
@@ -37,6 +41,17 @@ class DesktopApp:
         self.update_time()
         self.check_health_reminder()
         self.check_off_reminder()
+
+        # macOS 适配
+        if sys.platform == "darwin":
+            from Foundation import NSBundle
+
+            # 隐藏Dock图标
+            NSBundle.mainBundle().infoDictionary()["LSUIElement"] = True
+            # 禁用窗口动画
+            self.root.wm_attributes("-fullscreen", 0)
+            # 适配Retina显示
+            self.root.tk.call("tk", "scaling", 2.0)
 
     def on_drag_start(self, event):
         self._drag_start_x = event.x
