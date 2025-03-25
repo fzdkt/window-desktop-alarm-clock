@@ -70,7 +70,7 @@ class DesktopApp:
 
         label = tk.Label(
             reminder_window,
-            text="注意补水、休息眼睛！",
+            text="健康工作，注意补水、活动身体、休息眼睛！",
             font=("黑体", 48),
             fg="white",
             bg="#333333",
