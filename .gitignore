@@ -1,0 +1,10 @@
+# 忽略输出文件夹
+dist/
+build/
+__pycache__/
+
+# 忽略打包配置
+*.spec
+
+# 忽略python编译文件
+*.pyc
