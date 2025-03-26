@@ -17,12 +17,9 @@ class DesktopApp:
         self.root.attributes("-topmost", True)  # 置顶显示
         self.root.attributes("-alpha", 0.9)  # 设置透明度
         self.root.overrideredirect(True)  # 隐藏窗口边框
-        # if sys.platform == "win32":
-        #     self.root.iconbitmap("icon.ico")
-        # self.root.iconbitmap("icon.ico")  # 图标
-        
+
         # 图标设置
-        if getattr(sys, 'frozen', False):
+        if getattr(sys, "frozen", False):
             # 打包后模式
             base_path = sys._MEIPASS
         else:
