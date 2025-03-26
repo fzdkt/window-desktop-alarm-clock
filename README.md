@@ -38,3 +38,8 @@ taskschd.msc
 单击"任务计划程序库" → 新建文件夹（命名为MyClock）
 右键新建文件夹 → 选择"创建基本任务"
 设置名称、触发器、操作、条件、设置
+
+# Ubuntu/Debian
+sudo apt install gedit gnome-calculator
+# CentOS/Fedora
+sudo dnf install gedit gnome-calculator
