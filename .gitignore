@@ -3,6 +3,7 @@ dist/
 build/
 build_env/
 __pycache__/
+.venv/
 
 
 # 忽略python编译文件
