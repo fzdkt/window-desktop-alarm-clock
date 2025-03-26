@@ -1,6 +1,3 @@
-from datetime import datetime
-
-
 def is_workday(now):
     return now.weekday() < 5  # 周一到周六为工作日
 

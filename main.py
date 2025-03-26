@@ -1,11 +1,9 @@
 import tkinter as tk
-from datetime import datetime, timedelta
-import threading
-import time
+from datetime import datetime
 from utils.time_utils import is_workday, get_off_time
 import sys
 from screeninfo import get_monitors
-from PIL import ImageGrab, ImageTk
+from PIL import ImageGrab
 import subprocess
 import platform
 
