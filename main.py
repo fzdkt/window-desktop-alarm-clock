@@ -17,9 +17,24 @@ class DesktopApp:
         self.root.attributes("-topmost", True)  # 置顶显示
         self.root.attributes("-alpha", 0.9)  # 设置透明度
         self.root.overrideredirect(True)  # 隐藏窗口边框
-        if sys.platform == "win32":
-            self.root.iconbitmap("icon.ico")
-        self.root.iconbitmap("icon.ico")  # 图标
+        # if sys.platform == "win32":
+        #     self.root.iconbitmap("icon.ico")
+        # self.root.iconbitmap("icon.ico")  # 图标
+        
+        # 图标设置
+        if getattr(sys, 'frozen', False):
+            # 打包后模式
+            base_path = sys._MEIPASS
+        else:
+            # 开发模式
+            base_path = os.path.dirname(__file__)
+
+        icon_path = os.path.join(base_path, "icon.ico")
+        if os.path.exists(icon_path):
+            try:
+                self.root.iconbitmap(icon_path)
+            except Exception as e:
+                print(f"图标加载失败：{str(e)}")
 
         # 时间显示
         self.time_label = tk.Label(

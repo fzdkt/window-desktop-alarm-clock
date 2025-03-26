@@ -4,13 +4,21 @@
 
 # 安装pyinstaller
 ```powershell
-pip install pyinstaller
+# 创建并激活虚拟环境
+python -m venv pack_env
+pack_env\Scripts\activate
+
+pip install pyinstaller screeninfo pillow
 pip3 install pyinstaller dmgbuild
+
 ```
 
 ## windows打包成exe
 ```powershell
-pyinstaller --onefile --windowed --name "alarm-clock" --clean --noconsole main.py
+# 清理旧构建
+rmdir /s /q build dist
+# 执行打包
+pyinstaller build.spec --clean
 ```
 
 ## mac
