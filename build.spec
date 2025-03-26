@@ -25,6 +25,7 @@ a = Analysis(
     win_private_assemblies=False,
     cipher=block_cipher,
     noarchive=False,
+    runtime_tmpdir=None,  # 禁用临时目录
 )
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
@@ -49,4 +50,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    version='version_info.txt',
 )

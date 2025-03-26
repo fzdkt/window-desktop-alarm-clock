@@ -11,7 +11,7 @@ dir /b main.py build.spec >nul 2>&1 && (
     exit
 )
 
-pyinstaller build.spec --clean
+pyinstaller build.spec --clean --noconsole --noupx
 if exist "dist\MyClock.exe" (
     echo 生成位置: %cd%\dist
 ) else (
