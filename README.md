@@ -8,7 +8,8 @@
 python -m venv pack_env
 pack_env\Scripts\activate
 
-pip install pyinstaller screeninfo pillow
+# 安装依赖
+pip install -r requirements.txt
 pip3 install pyinstaller dmgbuild
 
 ```
@@ -17,6 +18,7 @@ pip3 install pyinstaller dmgbuild
 ```powershell
 # 清理旧构建
 rmdir /s /q build dist
+
 # 执行打包
 pyinstaller build.spec --clean
 ```
@@ -41,13 +43,21 @@ xcrun altool --notarize-app \
 ```
 
 ## 添加到计划任务中
-win + R
-taskschd.msc
-单击"任务计划程序库" → 新建文件夹（命名为MyClock）
-右键新建文件夹 → 选择"创建基本任务"
-设置名称、触发器、操作、条件、设置
+- win + R
+- 输入 taskschd.msc 后确定
+- 单击"任务计划程序库" → 新建文件夹（命名为MyClock）
+- 单击刚创建的“MyClock”后，在右侧选择"创建基本任务"
+- 设置好名称、触发器、操作、条件、设置等属性
 
 # Ubuntu/Debian
 sudo apt install gedit gnome-calculator
 # CentOS/Fedora
 sudo dnf install gedit gnome-calculator
+
+
+# 生成requirements.txt文件
+```powershell
+pip freeze > requirements.txt
+```
+
+
