@@ -1,0 +1,52 @@
+{
+  "files.encoding": "utf8",
+  "files.autoGuessEncoding": true,
+  // 通用配置
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+
+  // 语言特定配置
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+
+  "fileheader.customMade": {
+    "Author": "git config user.name",
+    "Date": "Do not edit",
+    "LastEditors": "git config user.name",
+    "LastEditTime": "Do not edit",
+    "FilePath": "Do not edit",
+    "Description": "",
+    "custom_string_obkoro1_copyright": "Copyright (c) ${now_year} by 杨鲲, All Rights Reserved. "
+  },
+
+  // ESLint配置
+  "eslint.validate": ["javascript", "typescript", "vue"],
+
+  // 排除文件
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/dist-electron": true,
+    "**/cache": true,
+    "**/release": true,
+    "**/.git": true,
+    "**/*.log": true
+  },
+
+  // 其他优化
+  "typescript.tsdk": "node_modules/typescript/lib", // 指定TypeScript版本
+  "javascript.updateImportsOnFileMove.enabled": "always"
+}

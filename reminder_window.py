@@ -1,3 +1,12 @@
+'''
+Author: YngKn
+Date: 2025-03-25 12:45:02
+LastEditors: YngKn
+LastEditTime: 2025-03-26 13:45:46
+FilePath: \window-desktop-alarm-clock\reminder_window.py
+Description: 
+Copyright (c) 2025 by 凯晨电气-研发中心-平台研发部, All Rights Reserved. 
+'''
 import tkinter as tk
 from typing import Optional
 
@@ -91,5 +100,5 @@ class ReminderManager:
     def show_off_reminder(parent: tk.Tk):
         """显示下班提醒"""
         ReminderWindow(
-            parent=parent, message="下班了", font_size=48, duration=30000  # 30秒
+            parent=parent, message="下班了", font_size=64, duration=30000  # 30秒
         )

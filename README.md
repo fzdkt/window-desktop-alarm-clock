@@ -2,7 +2,7 @@
 # window-desktop-alarm-clock
 ## 桌面程序-提醒自己喝水休息的闹钟
 
-# 安装pyinstaller
+# 环境安装
 ```powershell
 # 创建并激活虚拟环境
 python -m venv pack_env
