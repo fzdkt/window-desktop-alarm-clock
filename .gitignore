@@ -1,6 +1,7 @@
 # 忽略临时文件
 dist/
 build/
+build_env/
 __pycache__/
 
 
