@@ -49,13 +49,13 @@ xcrun altool --notarize-app \
 - 单击刚创建的“MyClock”后，在右侧选择"创建基本任务"
 - 设置好名称、触发器、操作、条件、设置等属性
 
-# Ubuntu/Debian
+## Ubuntu/Debian
 sudo apt install gedit gnome-calculator
-# CentOS/Fedora
+## CentOS/Fedora
 sudo dnf install gedit gnome-calculator
 
 
-# 生成requirements.txt文件
+## 更新/生成requirements.txt文件
 ```powershell
 pip freeze > requirements.txt
 ```
