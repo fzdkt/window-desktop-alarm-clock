@@ -65,15 +65,15 @@ class DesktopApp:
         self.check_off_reminder()
 
         # macOS 适配
-        if sys.platform == "darwin":
-            from Foundation import NSBundle
+        # if sys.platform == "darwin":
+        #     from Foundation import NSBundle
 
-            # 隐藏Dock图标
-            NSBundle.mainBundle().infoDictionary()["LSUIElement"] = True
-            # 禁用窗口动画
-            self.root.wm_attributes("-fullscreen", 0)
-            # 适配Retina显示
-            self.root.tk.call("tk", "scaling", 2.0)
+        #     # 隐藏Dock图标
+        #     NSBundle.mainBundle().infoDictionary()["LSUIElement"] = True
+        #     # 禁用窗口动画
+        #     self.root.wm_attributes("-fullscreen", 0)
+        #     # 适配Retina显示
+        #     self.root.tk.call("tk", "scaling", 2.0)
 
     def on_drag_start(self, event):
         self._drag_start_x = event.x
@@ -146,22 +146,32 @@ class DesktopApp:
 
             label = tk.Label(
                 reminder_window,
-                text="下班了",
-                font=("Arial", 48),
+                text="下班了！请回家休息，身体是革命的本钱！黄泉路上无老少，生死簿中见短长！",
+                font=("Arial", 38),
                 fg="white",
                 bg="#333333",
             )
             label.pack(pady=0, padx=0)
 
-            # 计算窗口位置
+            # 强制立即计算窗口尺寸
             reminder_window.update_idletasks()
-            window_width = reminder_window.winfo_width()
-            window_height = reminder_window.winfo_height()
-            x = monitor.x + (monitor.width - window_width) // 2
-            y = monitor.y + (monitor.height - window_height) // 2
-            reminder_window.geometry(f"+{x}+{y}")
 
-            reminder_window.after(30000, reminder_window.destroy)
+            # 获取显示器工作区域尺寸（排除任务栏）
+            screen_width = monitor.width
+            screen_height = monitor.height
+
+            # 直接使用窗口实际尺寸
+            window_width = reminder_window.winfo_reqwidth()
+            window_height = reminder_window.winfo_reqheight()
+
+            # 计算居中坐标
+            x = monitor.x + (screen_width - window_width) // 2
+            y = monitor.y + (screen_height - window_height) // 2
+
+            reminder_window.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
+            # 确保销毁方法正确执行（使用lambda保持窗口引用）
+            reminder_window.after(30000, lambda win=reminder_window: win.destroy())
 
     # 显示右键菜单
     def show_context_menu(self, event):
