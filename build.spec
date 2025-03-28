@@ -6,7 +6,11 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('icon.ico', '.'), ('utils/*', 'utils')],  # 添加资源文件
+    datas=[
+      ('icon.ico', '.'), 
+      ('sudden_death.jpg', '.'), 
+      ('utils/*', 'utils')
+    ],  # 添加资源文件
     hiddenimports=[
         'screeninfo',
         'screeninfo.enumerators',

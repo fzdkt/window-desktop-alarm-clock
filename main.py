@@ -7,6 +7,8 @@ from PIL import ImageGrab
 import subprocess
 import platform
 import os
+import ctypes
+from PIL import Image, ImageTk
 
 
 class DesktopApp:
@@ -16,6 +18,7 @@ class DesktopApp:
         self.root.attributes("-topmost", True)  # 置顶显示
         self.root.attributes("-alpha", 0.9)  # 设置透明度
         self.root.overrideredirect(True)  # 隐藏窗口边框
+        self.image_references = []
 
         # 图标设置
         if getattr(sys, "frozen", False):
@@ -136,6 +139,37 @@ class DesktopApp:
                 self.show_off_reminder()  # 直接调用代替线程
         self.root.after(1000, self.check_off_reminder)
 
+    def use_image(self):
+        # ============== 图片部分开始 ==============
+        base_width = 800  # 默认值
+        img_ratio = 1.0
+        try:
+            if getattr(sys, "frozen", False):
+                base_path = sys._MEIPASS
+            else:
+                base_path = os.path.dirname(__file__)
+            # 加载图片文件
+            img_path = os.path.join(base_path, "sudden_death.jpg")
+            img = Image.open(img_path)
+
+            # 调整图片尺寸
+            base_width = int(monitor.width * 0.3)
+            img_ratio = img.height / img.width
+            # img = img.resize((480, 350), Image.LANCZOS)
+            img = img.resize((base_width, int(base_width * img_ratio)), Image.LANCZOS)
+            # self.off_reminder_img = ImageTk.PhotoImage(img)  # 必须保持引用
+            photo_img = ImageTk.PhotoImage(img)
+            self.image_references.append(photo_img)
+            print(len(self.image_references))
+            img_label = tk.Label(reminder_window, image=photo_img, bg="#000000")
+            img_label.image = photo_img
+            img_label.pack(pady=10)
+        except Exception as e:
+            print(f"图片加载失败：{str(e)}")
+            if "img_path" in locals():  # 安全访问变量
+                print(f"尝试加载路径：{img_path}")
+        # ============== 图片部分结束 ==============
+
     # 下班提醒
     def show_off_reminder(self):
         for monitor in get_monitors():
@@ -145,10 +179,12 @@ class DesktopApp:
             reminder_window.attributes("-alpha", 0.9)
             reminder_window.overrideredirect(True)
 
+            # use_image()
+
             label = tk.Label(
                 reminder_window,
-                text="死亡告警：\n 生命只有一次！\n 加班996，住院ICU ！ \n下班了，请回家休息！ \n 休息，是为了走得更远！\n 黄泉路上无老少，生死簿中见短长！",
-                font=("黑体", 80),
+                text="死亡危险：加班996，住院ICU ！ 下班了，请回家休息！ 黄泉路上无老少，生死簿中见短长！",
+                font=("黑体", 60),
                 fg="red",
                 bg="#000000",
             )
@@ -218,7 +254,7 @@ class DesktopApp:
     def show_yk_info(self):
         for monitor in get_monitors():
             info_window = tk.Toplevel(self.root)
-            info_window.title("作者：杨鲲")
+            info_window.title("杨鲲出品")
             info_window.attributes("-topmost", True)
             info_window.attributes("-alpha", 0.9)
             info_window.overrideredirect(True)
