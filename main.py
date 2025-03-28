@@ -6,6 +6,7 @@ from screeninfo import get_monitors
 from PIL import ImageGrab
 import subprocess
 import platform
+import os
 
 
 class DesktopApp:
@@ -146,10 +147,10 @@ class DesktopApp:
 
             label = tk.Label(
                 reminder_window,
-                text="下班了！请回家休息，身体是革命的本钱！黄泉路上无老少，生死簿中见短长！",
-                font=("Arial", 38),
-                fg="white",
-                bg="#333333",
+                text="死亡告警：\n 生命只有一次！\n 加班996，住院ICU ！ \n下班了，请回家休息！ \n 休息，是为了走得更远！\n 黄泉路上无老少，生死簿中见短长！",
+                font=("黑体", 80),
+                fg="red",
+                bg="#000000",
             )
             label.pack(pady=0, padx=0)
 
@@ -182,13 +183,11 @@ class DesktopApp:
 
     # 安全退出程序
     def safe_exit(self):
-        """安全退出程序"""
         self.root.quit()
         self.root.destroy()
 
-    # 截图方法
+    # 快速截图保存到桌面
     def screenshot_to_desktop(self):
-        """快速截图保存到桌面"""
         try:
             # 获取桌面路径（跨平台方案）
             import os
@@ -217,10 +216,9 @@ class DesktopApp:
 
     # 显示作者信息
     def show_yk_info(self):
-        """显示杨鲲出品信息"""
         for monitor in get_monitors():
             info_window = tk.Toplevel(self.root)
-            info_window.title("杨鲲出品")
+            info_window.title("作者：杨鲲")
             info_window.attributes("-topmost", True)
             info_window.attributes("-alpha", 0.9)
             info_window.overrideredirect(True)
