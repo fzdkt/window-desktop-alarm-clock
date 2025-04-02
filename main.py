@@ -1,5 +1,5 @@
 import tkinter as tk
-from datetime import datetime
+from datetime import datetime, timedelta
 from utils.time_utils import is_workday, get_off_time
 import sys
 from screeninfo import get_monitors
@@ -66,7 +66,11 @@ class DesktopApp:
         # 启动时间更新
         self.update_time()
         self.check_health_reminder()
+        self.last_check_date = None
         self.check_off_reminder()
+
+        # 下班提醒调试用
+        # self.show_off_reminder()
 
         # macOS 适配
         # if sys.platform == "darwin":
@@ -132,12 +136,36 @@ class DesktopApp:
 
     def check_off_reminder(self):
         now = datetime.now()
+        if self.last_check_date != now.date():
+            self.last_check_date = now.date()
+            if is_workday(now):
+                try:
+                    off_time = get_off_time(now)  # 获取下班时间
+                    # 处理跨天情况（如果下班时间在次日）
+                    if off_time < now:
+                        off_time += timedelta(days=1)
+
+                    delta = (off_time - now).total_seconds() - 10
+                    if delta > 0:
+                        print(f"下次检查将在 {delta} 秒后触发")
+                        self.root.after(int(delta * 1000), self.trigger_reminder_check)
+                except Exception as e:
+                    print(f"下班时间计算错误：{str(e)}")
+
+    # 触发实际的下班提醒检查
+    def trigger_reminder_check(self):
+        self._check_off_reminder_impl()
+        # 设置次日检查（24小时后）
+        self.root.after(24 * 3600 * 1000, self.check_off_reminder)
+
+    # 实际的下班提醒逻辑
+    def _check_off_reminder_impl(self):
+        now = datetime.now()
         if is_workday(now):
             off_time = get_off_time(now)
             delta = off_time - now
             if delta.total_seconds() <= 10:
-                self.show_off_reminder()  # 直接调用代替线程
-        self.root.after(1000, self.check_off_reminder)
+                self.show_off_reminder()
 
     def use_image(self):
         # ============== 图片部分开始 ==============
@@ -207,8 +235,23 @@ class DesktopApp:
 
             reminder_window.geometry(f"{window_width}x{window_height}+{x}+{y}")
 
+            # 窗口关闭逻辑
+            def create_cleanup(win, m=monitor):  # 显式绑定当前monitor
+                def cleanup():
+                    try:
+                        win.destroy()
+                        win.update()
+                        print(f"已关闭显示器 {getattr(m, 'name', '未知')} 的提醒窗口")
+                    except Exception as e:
+                        print(
+                            f"关闭显示器 {getattr(m, 'name', '未知')} 窗口失败：{str(e)}"
+                        )
+
+                return cleanup
+
             # 确保销毁方法正确执行（使用lambda保持窗口引用）
-            reminder_window.after(30000, lambda win=reminder_window: win.destroy())
+            # reminder_window.after(30000, lambda win=reminder_window: win.destroy())
+            reminder_window.after(30000, create_cleanup(reminder_window))
 
     # 显示右键菜单
     def show_context_menu(self, event):
