@@ -211,7 +211,8 @@ class DesktopApp:
 
             label = tk.Label(
                 reminder_window,
-                text="死亡危险：加班996，住院ICU ！ 下班了，请回家休息！ 黄泉路上无老少，生死簿中见短长！",
+                # text="死亡危险：加班996，住院ICU ！ 下班了，请回家休息！ 黄泉路上无老少，生死簿中见短长！",
+                text="下班啦~",
                 font=("黑体", 32),
                 fg="red",
                 bg="#000000",
