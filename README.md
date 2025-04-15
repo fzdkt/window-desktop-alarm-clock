@@ -1,6 +1,6 @@
 
 # window-desktop-alarm-clock
-## 桌面程序-提醒自己喝水休息的闹钟
+## 桌面程序-提醒自己喝水休息的window桌面闹钟
 
 # 环境安装
 ```powershell
