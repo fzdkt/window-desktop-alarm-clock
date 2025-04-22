@@ -14,7 +14,7 @@ from PIL import Image, ImageTk
 class DesktopApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Desktop App")
+        self.root.title("桌面闹钟")
         self.root.attributes("-topmost", True)  # 置顶显示
         self.root.attributes("-alpha", 0.9)  # 设置透明度
         self.root.overrideredirect(True)  # 隐藏窗口边框
@@ -68,9 +68,11 @@ class DesktopApp:
         self.check_health_reminder()
         self.last_check_date = None
         self.check_off_reminder()
+        self.check_lunch_reminder()
 
         # 下班提醒调试用
         # self.show_off_reminder()
+        # self.trigger_lunch_reminder()
 
         # macOS 适配
         # if sys.platform == "darwin":
@@ -117,8 +119,8 @@ class DesktopApp:
 
             label = tk.Label(
                 reminder_window,
-                text="健康工作，注意补水、活动身体、休息眼睛！",
-                font=("黑体", 48),
+                text="健康工作，注意补水、活动身体、缓解视疲劳！",
+                font=("黑体", 42),
                 fg="white",
                 bg="#333333",
             )
@@ -147,7 +149,7 @@ class DesktopApp:
 
                     delta = (off_time - now).total_seconds() - 10
                     if delta > 0:
-                        print(f"下次检查将在 {delta} 秒后触发")
+                        # print(f"下次检查将在 {delta} 秒后触发")
                         self.root.after(int(delta * 1000), self.trigger_reminder_check)
                 except Exception as e:
                     print(f"下班时间计算错误：{str(e)}")
@@ -253,6 +255,55 @@ class DesktopApp:
             # 确保销毁方法正确执行（使用lambda保持窗口引用）
             # reminder_window.after(30000, lambda win=reminder_window: win.destroy())
             reminder_window.after(30000, create_cleanup(reminder_window))
+
+    # 午饭提醒检查方法
+    def check_lunch_reminder(self):
+        now = datetime.now()
+        target_time = now.replace(hour=11, minute=59, second=45, microsecond=0)
+
+        # 如果当前时间已经过了今天的目标时间，则设置明天的目标时间
+        if now > target_time:
+            target_time += timedelta(days=1)
+
+        delta = (target_time - now).total_seconds()
+        if delta > 0:
+            self.root.after(int(delta * 1000), self.trigger_lunch_reminder)
+
+    # 触发午饭提醒
+    def trigger_lunch_reminder(self):
+        self.show_lunch_reminder()
+        # 设置次日检查
+        self.root.after(24 * 3600 * 1000, self.check_lunch_reminder)
+
+    # 显示午饭提醒窗口
+    def show_lunch_reminder(self):
+        for monitor in get_monitors():
+            reminder_window = tk.Toplevel(self.root)
+            reminder_window.title("午饭提醒")
+            reminder_window.attributes("-topmost", True)
+            reminder_window.attributes("-alpha", 0.9)
+            reminder_window.overrideredirect(True)
+
+            label = tk.Label(
+                reminder_window,
+                text="胃肠抗议：饿过饭点，血糖告急！午餐时间到了，请及时充电！病从口入需防范，健康饮食保平安！",
+                # text="吃饭啦~",
+                font=("黑体", 32),  # 使用更大字号
+                fg="#FFA500",  # 橙色文字
+                bg="#000000",
+            )
+            label.pack(pady=0, padx=0)
+
+            # 窗口定位逻辑（与下班提醒相同）
+            reminder_window.update_idletasks()
+            window_width = reminder_window.winfo_reqwidth()
+            window_height = reminder_window.winfo_reqheight()
+            x = monitor.x + (monitor.width - window_width) // 2
+            y = monitor.y + (monitor.height - window_height) // 2
+            reminder_window.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
+            # 30秒后自动关闭
+            reminder_window.after(30000, reminder_window.destroy)
 
     # 显示右键菜单
     def show_context_menu(self, event):
