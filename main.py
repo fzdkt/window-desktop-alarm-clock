@@ -53,7 +53,9 @@ class DesktopApp:
         self.context_menu.add_command(label="打开记事本", command=self.open_notepad)
         self.context_menu.add_command(label="打开计算器", command=self.open_calculator)
         self.context_menu.add_separator()
-        self.context_menu.add_command(label="杨鲲出品", command=self.show_yk_info)
+        self.context_menu.add_command(
+            label="Designed by Yang K.", command=self.show_yk_info
+        )
 
         # 绑定拖动事件
         self._drag_start_x = 0
@@ -69,7 +71,6 @@ class DesktopApp:
         self.last_check_date = None
         self.check_off_reminder()
         self.check_lunch_reminder()  # 午餐提醒检查
-        
 
         # 下班提醒调试用
         # self.show_off_reminder()
@@ -139,7 +140,6 @@ class DesktopApp:
 
             reminder_window.after(30000, reminder_window.destroy)
 
-
     def use_image(self):
         # ============== 图片部分开始 ==============
         base_width = 800  # 默认值
@@ -171,18 +171,16 @@ class DesktopApp:
                 print(f"尝试加载路径：{img_path}")
         # ============== 图片部分结束 ==============
 
-    
-
     def check_lunch_reminder(self):
         """每天11:59:50准时提醒"""
         now = datetime.now()
         # 设置目标时间
         target_time = now.replace(hour=11, minute=59, second=50, microsecond=0)
-        
+
         # 如果当前时间已过今天的目标时间，则计算明天的时间
         if now > target_time:
             target_time += timedelta(days=1)
-        
+
         # 计算时间差（毫秒）
         delta = (target_time - now).total_seconds() * 1000
         self.root.after(int(delta), self.show_lunch_reminder)
@@ -215,13 +213,15 @@ class DesktopApp:
 
             # 20秒后自动关闭并设置次日提醒
             reminder_window.after(20000, reminder_window.destroy)
-            self.root.after(24 * 3600 * 1000, self.check_lunch_reminder)  # 24小时后重新检查   
-    
+            self.root.after(
+                24 * 3600 * 1000, self.check_lunch_reminder
+            )  # 24小时后重新检查
+
     def check_off_reminder(self):
         """根据季节设置下班提醒时间"""
         now = datetime.now()
         current_month = now.month
-        
+
         # 设置季节时间（5-9月夏季，其他冬季）
         if 5 <= current_month <= 9:
             target_time = now.replace(hour=17, minute=59, second=50, microsecond=0)
@@ -264,8 +264,9 @@ class DesktopApp:
 
             # 30秒后自动关闭并设置次日提醒
             reminder_window.after(30000, reminder_window.destroy)
-            self.root.after(24 * 3600 * 1000, self.check_off_reminder)  # 24小时后重新检查
-
+            self.root.after(
+                24 * 3600 * 1000, self.check_off_reminder
+            )  # 24小时后重新检查
 
     # 显示右键菜单
     def show_context_menu(self, event):
