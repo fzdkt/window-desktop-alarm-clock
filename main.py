@@ -75,7 +75,7 @@ class DesktopApp:
         # self.show_off_reminder()
         # self.trigger_lunch_reminder()
         # self.show_lunch_reminder()
-        # self.show_lunch_reminder()
+        # self.show_off_reminder()
 
         # macOS 适配
         # if sys.platform == "darwin":
@@ -139,38 +139,6 @@ class DesktopApp:
 
             reminder_window.after(30000, reminder_window.destroy)
 
-    def check_off_reminder(self):
-        now = datetime.now()
-        if self.last_check_date != now.date():
-            self.last_check_date = now.date()
-            if is_workday(now):
-                try:
-                    off_time = get_off_time(now)  # 获取下班时间
-                    # 处理跨天情况（如果下班时间在次日）
-                    if off_time < now:
-                        off_time += timedelta(days=1)
-
-                    delta = (off_time - now).total_seconds() - 10
-                    if delta > 0:
-                        # print(f"下次检查将在 {delta} 秒后触发")
-                        self.root.after(int(delta * 1000), self.trigger_reminder_check)
-                except Exception as e:
-                    print(f"下班时间计算错误：{str(e)}")
-
-    # 触发实际的下班提醒检查
-    def trigger_reminder_check(self):
-        self._check_off_reminder_impl()
-        # 设置次日检查（24小时后）
-        self.root.after(24 * 3600 * 1000, self.check_off_reminder)
-
-    # 实际的下班提醒逻辑
-    def _check_off_reminder_impl(self):
-        now = datetime.now()
-        if is_workday(now):
-            off_time = get_off_time(now)
-            delta = off_time - now
-            if delta.total_seconds() <= 10:
-                self.show_off_reminder()
 
     def use_image(self):
         # ============== 图片部分开始 ==============
@@ -203,61 +171,7 @@ class DesktopApp:
                 print(f"尝试加载路径：{img_path}")
         # ============== 图片部分结束 ==============
 
-    # 下班提醒
-    def show_off_reminder(self):
-        for monitor in get_monitors():
-            reminder_window = tk.Toplevel(self.root)
-            reminder_window.title("下班提醒")
-            reminder_window.attributes("-topmost", True)
-            reminder_window.attributes("-alpha", 0.9)
-            reminder_window.overrideredirect(True)
-
-            # use_image()
-
-            label = tk.Label(
-                reminder_window,
-                # text="死亡危险：加班996，住院ICU ！ 下班了，请回家休息！ 黄泉路上无老少，生死簿中见短长！",
-                text="下班啦~",
-                font=("黑体", 32),
-                fg="red",
-                bg="#000000",
-            )
-            label.pack(pady=0, padx=0)
-
-            # 强制立即计算窗口尺寸
-            reminder_window.update_idletasks()
-
-            # 获取显示器工作区域尺寸（排除任务栏）
-            screen_width = monitor.width
-            screen_height = monitor.height
-
-            # 直接使用窗口实际尺寸
-            window_width = reminder_window.winfo_reqwidth()
-            window_height = reminder_window.winfo_reqheight()
-
-            # 计算居中坐标
-            x = monitor.x + (screen_width - window_width) // 2
-            y = monitor.y + (screen_height - window_height) // 2
-
-            reminder_window.geometry(f"{window_width}x{window_height}+{x}+{y}")
-
-            # 窗口关闭逻辑
-            def create_cleanup(win, m=monitor):  # 显式绑定当前monitor
-                def cleanup():
-                    try:
-                        win.destroy()
-                        win.update()
-                        print(f"已关闭显示器 {getattr(m, 'name', '未知')} 的提醒窗口")
-                    except Exception as e:
-                        print(
-                            f"关闭显示器 {getattr(m, 'name', '未知')} 窗口失败：{str(e)}"
-                        )
-
-                return cleanup
-
-            # 确保销毁方法正确执行（使用lambda保持窗口引用）
-            # reminder_window.after(30000, lambda win=reminder_window: win.destroy())
-            reminder_window.after(30000, create_cleanup(reminder_window))
+    
 
     def check_lunch_reminder(self):
         """每天11:59:50准时提醒"""
@@ -284,7 +198,7 @@ class DesktopApp:
 
             label = tk.Label(
                 reminder_window,
-                text="吃饭啦！按时吃饭，早睡早起，自律如昔，能扛大事。",
+                text="午饭时间到啦！按时吃饭，早睡早起，自律如昔，能扛大事。",
                 font=("黑体", 36),
                 fg="#FFA500",  # 橙色文字
                 bg="#000000",
@@ -301,7 +215,56 @@ class DesktopApp:
 
             # 20秒后自动关闭并设置次日提醒
             reminder_window.after(20000, reminder_window.destroy)
-            self.root.after(24 * 3600 * 1000, self.check_lunch_reminder)  # 24小时后重新检查     
+            self.root.after(24 * 3600 * 1000, self.check_lunch_reminder)  # 24小时后重新检查   
+    
+    def check_off_reminder(self):
+        """根据季节设置下班提醒时间"""
+        now = datetime.now()
+        current_month = now.month
+        
+        # 设置季节时间（5-9月夏季，其他冬季）
+        if 5 <= current_month <= 9:
+            target_time = now.replace(hour=17, minute=59, second=50, microsecond=0)
+        else:
+            target_time = now.replace(hour=17, minute=29, second=50, microsecond=0)
+
+        # 如果当前时间已过目标时间，设置明天的提醒
+        if now > target_time:
+            target_time += timedelta(days=1)
+
+        # 计算时间差并安排提醒
+        delta = (target_time - now).total_seconds() * 1000
+        self.root.after(int(delta), self.show_off_reminder)
+
+    def show_off_reminder(self):
+        """显示下班提醒窗口"""
+        for monitor in get_monitors():
+            reminder_window = tk.Toplevel(self.root)
+            reminder_window.title("下班提醒")
+            reminder_window.attributes("-topmost", True)
+            reminder_window.attributes("-alpha", 0.9)
+            reminder_window.overrideredirect(True)
+
+            label = tk.Label(
+                reminder_window,
+                text="下班时间到！及时收工，劳逸结合方为长久之道。",
+                font=("黑体", 36),
+                fg="#00FF00",  # 绿色文字
+                bg="#000000",
+            )
+            label.pack(pady=0, padx=0)
+
+            # 窗口定位
+            reminder_window.update_idletasks()
+            window_width = reminder_window.winfo_width()
+            window_height = reminder_window.winfo_height()
+            x = monitor.x + (monitor.width - window_width) // 2
+            y = monitor.y + (monitor.height - window_height) // 2
+            reminder_window.geometry(f"+{x}+{y}")
+
+            # 30秒后自动关闭并设置次日提醒
+            reminder_window.after(30000, reminder_window.destroy)
+            self.root.after(24 * 3600 * 1000, self.check_off_reminder)  # 24小时后重新检查
 
 
     # 显示右键菜单
