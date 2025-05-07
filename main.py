@@ -217,8 +217,9 @@ class DesktopApp:
                 24 * 3600 * 1000, self.check_lunch_reminder
             )  # 24小时后重新检查
 
+    # 根据季节设置下班提醒时间
     def check_off_reminder(self):
-        """根据季节设置下班提醒时间"""
+
         now = datetime.now()
         current_month = now.month
 
@@ -236,8 +237,9 @@ class DesktopApp:
         delta = (target_time - now).total_seconds() * 1000
         self.root.after(int(delta), self.show_off_reminder)
 
+    # 显示下班提醒窗口
     def show_off_reminder(self):
-        """显示下班提醒窗口"""
+
         for monitor in get_monitors():
             reminder_window = tk.Toplevel(self.root)
             reminder_window.title("下班提醒")
